@@ -9,9 +9,18 @@ import os
 import streamlit as st
 from dotenv import load_dotenv
 from agents.manager.manager_cat import ManagerCat
+import matplotlib
+from utils.font_configuration import setup_japanese_fonts, check_japanese_fonts
 
 # 環境変数の読み込み
 load_dotenv()
+
+# 日本語フォントの設定
+print("日本語フォントを設定中...")
+setup_japanese_fonts()
+# 開発時には利用可能なフォント一覧を表示
+if os.environ.get("DEBUG") == "true":
+    check_japanese_fonts()
 
 # アプリケーションのタイトル設定
 st.set_page_config(

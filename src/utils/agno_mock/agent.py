@@ -166,7 +166,30 @@ class Agent:
         elif "リサーチ猫" in self.description:
             agent_type = "リサーチ猫"
         elif "データ分析猫" in self.description:
+            # データ分析猫の場合、特別な応答を生成（実際の分析機能を模擬）
             agent_type = "データ分析猫"
+            if "売上" in content and "分析" in content:
+                return f"""# 📊 データ分析結果
+
+売上データの分析を行いましたにゃ～。詳しい分析はマネージャー猫から受け取ったデータを使って実施しています。
+グラフとともに詳細な分析結果をご確認くださいにゃ！
+
+## 分析ポイント
+- 売上傾向
+- 商品別の販売状況
+- 顧客数との相関関係
+
+どの商品が一番売れているか、どの日の売上が最も高かったかなどを確認できますにゃ。
+ご質問があればお気軽にどうぞ～（=^・ω・^=）"""
+            else:
+                return f"""# 📈 データ分析レポート
+
+ご依頼の分析を行いましたにゃ！
+
+{content}というリクエストについて、分析を実施しましたが、詳細なデータが必要です。
+どのようなデータを分析すればよいか、より詳しく教えていただけますか？
+
+データ分析猫より（=^・ω・^=）"""
         elif "業務遂行猫" in self.description:
             agent_type = "業務遂行猫"
         elif "ドキュメント猫" in self.description:
@@ -180,9 +203,14 @@ class Agent:
         elif "エラー対応猫" in self.description:
             agent_type = "エラー対応猫"
             
-        return f"これは{agent_type}からのモック応答です。実際のAI応答ではありません。\n\n受信したメッセージ: {content[:50]}..."
+        return f"""# 🐾 {agent_type}からの応答
 
+{content}について調査しました。
 
+詳細情報は現在準備中ですにゃ～。もう少し具体的なリクエストをいただけると助かりますにゃ！
+
+何かご質問があれば、お気軽にどうぞ（=^・ω・^=）"""
+        
 def create_agent(id: str, model: str, description: str, instructions: str, 
                  memory: Optional[AgentMemory] = None, storage = None, 
                  markdown: bool = True, show_tool_calls: bool = False, 
