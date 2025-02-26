@@ -14,8 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
-from agno import Agent, AgentMemory, create_agent
-from agno.storage import SqliteAgentStorage
+from utils.agno_mock import Agent, AgentMemory, create_agent, SqliteAgentStorage
 
 class DataAnalystCat:
     """

@@ -8,8 +8,7 @@
 
 import os
 from typing import Dict, Any, List, Optional
-from agno import Agent, AgentMemory, create_agent
-from agno.storage import SqliteAgentStorage
+from utils.agno_mock import Agent, AgentMemory, create_agent, SqliteAgentStorage
 
 class ManagerCat:
     """

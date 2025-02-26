@@ -13,8 +13,7 @@ import psutil
 import threading
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Tuple, Callable
-from agno import Agent, AgentMemory, create_agent
-from agno.storage import SqliteAgentStorage
+from utils.agno_mock import Agent, AgentMemory, create_agent, SqliteAgentStorage
 
 class MonitorCat:
     """
