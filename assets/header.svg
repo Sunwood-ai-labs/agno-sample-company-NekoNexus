@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="200" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 角を丸めた長方形の背景 -->
+  <rect x="10" y="10" width="780" height="180" rx="20" ry="20" fill="url(#gradient)" />
+  
+  <!-- グラデーション定義 -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A00" stop-opacity="0.8">
+        <animate attributeName="stop-color" values="#FF8A00;#FFD700;#FF8A00" dur="10s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#9941D8" stop-opacity="0.8">
+        <animate attributeName="stop-color" values="#9941D8;#6441A5;#9941D8" dur="10s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+    
+    <!-- 猫のシルエット -->
+    <path id="cat-path" d="M140,115 C125,105 125,90 130,80 C135,70 140,65 140,55 C140,45 135,40 135,30 C135,20 140,15 150,15 C160,15 165,20 165,30 C165,40 160,45 160,55 C160,65 165,70 170,80 C175,90 175,105 160,115 C155,118 145,118 140,115 Z" />
+  </defs>
+  
+  <!-- メインタイトル -->
+  <text x="400" y="80" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#FFFFFF">
+    NekoNexus
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite" />
+  </text>
+  
+  <!-- サブタイトル -->
+  <text x="400" y="120" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#FFFFFF">
+    Intelligent Feline-Powered Task Automation
+  </text>
+  
+  <!-- 猫のシルエット（左側） -->
+  <use href="#cat-path" fill="#FFFFFF" opacity="0.7" transform="translate(50, 30) scale(0.8)">
+    <animate attributeName="transform" values="translate(50, 30) scale(0.8);translate(50, 25) scale(0.8);translate(50, 30) scale(0.8)" dur="4s" repeatCount="indefinite" />
+  </use>
+  
+  <!-- 猫のシルエット（右側） -->
+  <use href="#cat-path" fill="#FFFFFF" opacity="0.7" transform="translate(550, 30) scale(-0.8, 0.8)">
+    <animate attributeName="transform" values="translate(550, 30) scale(-0.8, 0.8);translate(550, 25) scale(-0.8, 0.8);translate(550, 30) scale(-0.8, 0.8)" dur="4s" repeatCount="indefinite" />
+  </use>
+</svg>
