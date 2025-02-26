@@ -11,8 +11,7 @@ import time
 import platform
 import psutil
 from typing import Dict, Any, List, Optional, Tuple
-from agno import Agent, AgentMemory, create_agent
-from agno.storage import SqliteAgentStorage
+from utils.agno_mock import Agent, AgentMemory, create_agent, SqliteAgentStorage
 
 class SystemCat:
     """
