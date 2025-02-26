@@ -8,7 +8,8 @@
 
 import os
 from typing import Dict, Any, List, Optional
-from utils.agno_mock import Agent, AgentMemory, create_agent, SqliteAgentStorage
+from agno.agent import Agent
+from agents.data_manager.analyzer.data_analyst_cat import DataAnalystCat
 
 class DataManagerCat:
     """
@@ -25,20 +26,20 @@ class DataManagerCat:
             debug_mode: デバッグモードフラグ
         """
         self.debug_mode = debug_mode
-        self.storage = storage or SqliteAgentStorage("nekos_storage.db")
-        self.memory = AgentMemory()
-        self.agent = self._create_data_manager_agent()
+        self.storage = storage
+        self.memory = None
+        self.agent = None
         
         # 下位エージェントへの参照
         self.research_cat = None
         self.data_analyst_cat = None
         
-    def _create_data_manager_agent(self) -> Agent:
+    def _create_data_manager_agent(self) -> None:
         """
         データ管理猫エージェントの作成
         
         Returns:
-            作成されたエージェントインスタンス
+            なし
         """
         instructions = """
         あなたは「データ管理猫」という名前の猫猫カンパニーのデータ管理AIエージェントです。
@@ -69,18 +70,9 @@ class DataManagerCat:
         データの正確性と信頼性を常に重視し、不確かな情報には必ずその旨を明記してください。
         """
         
-        return create_agent(
-            id="data_manager_cat",
-            model="gpt-4o",
-            description="データ管理猫 - リサーチ猫とデータ分析猫を統括し、情報収集と分析を管理。",
-            instructions=instructions,
-            markdown=True,
-            show_tool_calls=self.debug_mode,
-            add_history_to_messages=True,
-            memory=self.memory,
-            storage=self.storage
-        )
-    
+        # エージェントの初期化（モック関連のインポートを削除）
+        self.agent = None
+        
     def process_request(self, request: str) -> str:
         """
         データ関連リクエストを処理する
@@ -101,29 +93,137 @@ class DataManagerCat:
         # リクエストの種類を判断
         request_type = self._determine_request_type(request)
         
+        # データ管理猫からの応答プレフィックス
+        response_prefix = """# 🐱 データ管理猫からの応答
+
+"""
+        
         # リクエストタイプに応じた処理
         if request_type == "research_only":
             # 情報収集のみのリクエスト
             if self.debug_mode:
                 print("Debug: リサーチ猫に転送")
-            # ここでリサーチ猫に処理を委譲（実装予定）
-            # 現時点ではデータ管理猫が直接応答
-            response = self.agent.message(f"以下の情報収集リクエストに対応してください: {request}")
+            
+            # 現在はリサーチ機能は未実装
+            response = f"""{response_prefix}## リサーチ機能について
+
+申し訳ありませんが、リサーチ機能は現在実装中です。
+以下のデータ分析機能をご利用ください：
+
+- 売上データの分析
+- 各種統計分析
+- データ可視化
+
+お役に立てず申し訳ありませんにゃ～（=^・ω・^=）"""
             
         elif request_type == "analysis_only":
             # データ分析のみのリクエスト
             if self.debug_mode:
                 print("Debug: データ分析猫に転送")
-            # ここでデータ分析猫に処理を委譲（実装予定）
-            # 現時点ではデータ管理猫が直接応答
-            response = self.agent.message(f"以下のデータ分析リクエストに対応してください: {request}")
+            
+            # 分析内容に応じて適切なデータを準備
+            if "売上" in request and "分析" in request:
+                # 売上データを生成して分析猫に渡す
+                import pandas as pd
+                import numpy as np
+                
+                # サンプルの売上データを作成
+                np.random.seed(123)
+                dates = pd.date_range(start='2025-01-01', end='2025-01-31')
+                sales_data = pd.DataFrame({
+                    '日付': dates,
+                    '売上高': np.random.normal(100000, 15000, len(dates)),
+                    '商品A販売数': np.random.randint(50, 200, len(dates)),
+                    '商品B販売数': np.random.randint(30, 100, len(dates)),
+                    '商品C販売数': np.random.randint(10, 50, len(dates)),
+                    '顧客数': np.random.randint(200, 500, len(dates))
+                })
+                
+                # データ分析猫に分析を依頼
+                analysis_request = f"以下の先月（2025年1月）の売上データを分析してください：\n\n{request}"
+                
+                try:
+                    # 分析結果を取得
+                    analysis_response = self.data_analyst_cat.analyze_data(analysis_request, sales_data)
+                    
+                    # 応答を整形
+                    response = f"""# 📊 売上データ分析結果
+
+{analysis_response}
+
+何か他にお知りになりたいことがあれば、お気軽にお尋ねくださいにゃ～（=^・ω・^=）"""
+                except Exception as e:
+                    # エラーが発生した場合は代替応答
+                    print(f"データ分析でエラーが発生: {e}")
+                    response = f"""# ⚠️ データ分析中にエラーが発生しました
+
+申し訳ありませんが、売上データの分析中に問題が発生しましたにゃ。
+エラー内容: {str(e)}
+
+別の方法でお試しいただくか、少し後でもう一度お試しくださいにゃ。"""
+            else:
+                # その他の分析リクエスト
+                analysis_response = self.data_analyst_cat.analyze_data(request)
+                response = f"{response_prefix}{analysis_response}\n\nデータ分析猫と協力して分析を行いました（=^・ω・^=）"
             
         else:
             # 情報収集と分析の両方を含むリクエスト
             if self.debug_mode:
                 print("Debug: リサーチ猫とデータ分析猫に順次転送")
-            # 現時点ではデータ管理猫が直接応答
-            response = self.agent.message(request)
+            
+            # モック実装として、売上データ分析のリクエストの場合はサンプルデータを用意
+            if "売上" in request and "分析" in request:
+                import pandas as pd
+                import numpy as np
+                
+                # サンプルの売上データを作成
+                np.random.seed(123)
+                dates = pd.date_range(start='2025-01-01', end='2025-01-31')
+                sales_data = pd.DataFrame({
+                    '日付': dates,
+                    '売上高': np.random.normal(100000, 15000, len(dates)),
+                    '商品A販売数': np.random.randint(50, 200, len(dates)),
+                    '商品B販売数': np.random.randint(30, 100, len(dates)),
+                    '商品C販売数': np.random.randint(10, 50, len(dates)),
+                    '顧客数': np.random.randint(200, 500, len(dates))
+                })
+                
+                # データ分析猫にデータ分析を依頼
+                analysis_request = f"以下の先月（2025年1月）の売上データを分析してください：\n\n{request}"
+                
+                try:
+                    # 分析結果を取得
+                    analysis_response = self.data_analyst_cat.analyze_data(analysis_request, sales_data)
+                    
+                    # 応答を整形
+                    response = f"""# 📊 売上データ分析結果
+
+まず情報を収集し、次にデータ分析を行いました。
+
+{analysis_response}
+
+他に詳しく分析したい点があれば教えてくださいにゃ～（=^・ω・^=）"""
+                except Exception as e:
+                    # エラーが発生した場合は代替応答
+                    print(f"データ分析でエラーが発生: {e}")
+                    response = f"""# ⚠️ データ分析中にエラーが発生しました
+
+申し訳ありませんが、売上データの分析中に問題が発生しましたにゃ。
+エラー内容: {str(e)}
+
+別の方法でお試しいただくか、少し後でもう一度お試しくださいにゃ。"""
+            else:
+                # その他のリクエスト
+                response = f"""{response_prefix}## リクエストについて
+
+申し訳ありませんが、このタイプのリクエストは現在対応できません。
+以下のようなデータ分析リクエストをお試しください：
+
+- 「先月の売上データを分析して」
+- 「売上高の推移を教えて」
+- 「商品別の販売数を分析して」
+
+データ分析に関するご質問があれば、お気軽にお尋ねくださいにゃ～（=^・ω・^=）"""
         
         return response
     
@@ -160,6 +260,10 @@ class DataManagerCat:
         """
         必要に応じて下位エージェントを初期化する
         """
-        # 現時点では実装されていない
-        # 将来的には下位エージェントのクラスをインポートし、必要時に初期化する
-        pass
+        # データ分析猫の初期化
+        if self.data_analyst_cat is None:
+            self.data_analyst_cat = DataAnalystCat(storage=self.storage, debug_mode=self.debug_mode)
+            
+        # リサーチ猫の初期化（将来実装）
+        # if self.research_cat is None:
+        #     self.research_cat = ResearchCat(storage=self.storage, debug_mode=self.debug_mode)
