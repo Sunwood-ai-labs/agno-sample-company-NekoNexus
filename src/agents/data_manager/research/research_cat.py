@@ -8,9 +8,7 @@ Web検索猫と社内DB検索猫を統括し、情報収集を担当
 
 import os
 from typing import Dict, Any, List, Optional
-from agno import Agent, AgentMemory, create_agent, SearchType
-from agno.storage import SqliteAgentStorage
-from agno.tools import DuckDuckGoTools
+from utils.agno_mock import Agent, AgentMemory, create_agent, SearchType, SqliteAgentStorage, DuckDuckGoTools
 
 class ResearchCat:
     """
